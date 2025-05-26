@@ -44,10 +44,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Game.cs" />
+    <Compile Include="Item.cs" />
+    <Compile Include="ItemDatabasse.cs" />
+    <Compile Include="ItemType.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="Pets\Pet.cs" />
     <Compile Include="Pets\PetStat.cs" />
     <Compile Include="Pets\PetType.cs" />
+    <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

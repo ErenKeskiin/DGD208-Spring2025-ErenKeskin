@@ -1,12 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DGD208_Spring2025_ErenKeskin.Pets
+﻿namespace DGD208_Spring2025_ErenKeskin.Pets
 {
-    internal class PetStat
+    public class PetStat
     {
+        public int Hunger { get; set; }
+        public int Sleep { get; set; }
+        public int Fun { get; set; }
+
+        public PetStat(int hunger = 50, int sleep = 50, int fun = 50)
+        {
+            Hunger = hunger;
+            Sleep = sleep;
+            Fun = fun;
+        }
     }
 }

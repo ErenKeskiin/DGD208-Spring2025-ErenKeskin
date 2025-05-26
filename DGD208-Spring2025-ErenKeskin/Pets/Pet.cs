@@ -1,30 +1,19 @@
-﻿namespace InteractivePetSimulator
+﻿namespace DGD208_Spring2025_ErenKeskin.Pets
 {
-    public enum PetType
-    {
-        Dog,
-        Cat,
-        Bird
-    }
-
     public class Pet
     {
         public PetType PetType { get; set; }
-        public int Hunger { get; set; }
-        public int Sleep { get; set; }
-        public int Fun { get; set; }
+        public PetStat Stat { get; set; }
 
         public Pet(PetType petType)
         {
             PetType = petType;
-            Hunger = 50;
-            Sleep = 50;
-            Fun = 50;
+            Stat = new PetStat();
         }
 
         public override string ToString()
         {
-            return $"{PetType} - Hunger: {Hunger}, Sleep: {Sleep}, Fun: {Fun}";
+            return $"{PetType} - Hunger: {Stat.Hunger}, Sleep: {Stat.Sleep}, Fun: {Stat.Fun}";
         }
     }
 }
