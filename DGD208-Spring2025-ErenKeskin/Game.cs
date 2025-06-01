@@ -7,7 +7,7 @@ namespace InteractivePetSimulator
     public class Game
     {
         private List<Pet> pets = new List<Pet>();
-        private Player player = new Player(100);
+        private Player player = new Player(1000);
 
         public void Start()
         {
@@ -194,7 +194,7 @@ namespace InteractivePetSimulator
             Console.WriteLine("                         ");
             Console.WriteLine("Developed by: Eren Keskin");
             Console.WriteLine("Student Number: 225040108");
-
+            Console.WriteLine("                         ");
             Console.WriteLine("       --DGD208--        ");
             Console.WriteLine("                         ");
             Console.WriteLine("Press any key to return to the main menu...");
