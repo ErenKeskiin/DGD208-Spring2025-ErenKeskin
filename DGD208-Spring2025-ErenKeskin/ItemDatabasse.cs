@@ -8,6 +8,7 @@ namespace InteractivePetSimulator
         public static List<Item> Items = new List<Item>
         {
             new Item("Dog Food ( Meat )", ItemType.Food, 20, 20, 2, new List<PetType>{ PetType.Dog }),
+            new Item("Dog Food ( Bones )", ItemType.Food, 20, 20, 3, new List<PetType>{ PetType.Dog }),
             new Item("Cat Food ( Fish )", ItemType.Food, 20, 20, 2, new List<PetType>{ PetType.Cat }),
             new Item("Gecko Food ( Flour Worm )", ItemType.Food, 20, 20, 2, new List<PetType>{PetType.Gecko }),
             new Item("Dragon Food ( Small Bones )", ItemType.Food, 20, 20, 2, new List<PetType>{ PetType.MiniDragon }),
