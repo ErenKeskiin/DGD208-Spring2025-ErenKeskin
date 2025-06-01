@@ -7,7 +7,7 @@ namespace InteractivePetSimulator
     public class Game
     {
         private List<Pet> pets = new List<Pet>();
-        private Player player = new Player(100); 
+        private Player player = new Player(100);
 
         public void Start()
         {
@@ -122,7 +122,7 @@ namespace InteractivePetSimulator
                 if (pets.Count == 0)
                 {
                     Console.WriteLine("You have no pets to use this item on.");
-                    player.AddMoney(selectedItem.Price); 
+                    player.AddMoney(selectedItem.Price);
                     Console.ReadKey();
                     return;
                 }
@@ -131,7 +131,15 @@ namespace InteractivePetSimulator
                 var selectedPet = petMenu.ShowAndGetSelection();
                 if (selectedPet == null)
                 {
-                    player.AddMoney(selectedItem.Price); 
+                    player.AddMoney(selectedItem.Price);
+                    return;
+                }
+
+                if (!selectedItem.UsablePetTypes.Contains(selectedPet.PetType))
+                {
+                    Console.WriteLine($"This item cannot be used on {selectedPet.PetType}!");
+                    player.AddMoney(selectedItem.Price);
+                    Console.ReadKey();
                     return;
                 }
 
@@ -174,8 +182,9 @@ namespace InteractivePetSimulator
             Console.WriteLine("                         ");
             Console.WriteLine("Developed by: Eren Keskin");
             Console.WriteLine("Student Number: 225040108");
-            Console.WriteLine("--DGD208--");
-            Console.WriteLine("          ");
+
+            Console.WriteLine("       --DGD208--        ");
+            Console.WriteLine("                         ");
             Console.WriteLine("Press any key to return to the main menu...");
             Console.ReadKey();
         }
