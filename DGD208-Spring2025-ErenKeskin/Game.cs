@@ -93,7 +93,7 @@ namespace InteractivePetSimulator
                     
                     foreach (var dead in deadPets)
                     {
-                        Console.WriteLine($"Your {dead.PetType} has died due to a stat reaching 0! ");
+                        Console.WriteLine($"Your {dead.PetType} has died due to a stat reaching 0!");
                         pets.Remove(dead);
                     }
                     if (deadPets.Count > 0)
