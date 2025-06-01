@@ -4,6 +4,10 @@
     {
         Dog,
         Cat,
-        MiniDragon
+        MiniDragon,
+        Snake,
+        Goldfish,
+        Turtle,
+        Gecko,
     }
 }

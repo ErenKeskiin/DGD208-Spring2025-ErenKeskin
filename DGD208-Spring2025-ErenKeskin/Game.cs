@@ -64,6 +64,10 @@ namespace InteractivePetSimulator
             Console.WriteLine("1. Dog");
             Console.WriteLine("2. Cat");
             Console.WriteLine("3. MiniDragon");
+            Console.WriteLine("4. Snake");
+            Console.WriteLine("5. GoldFish");
+            Console.WriteLine("6. Turtle");
+            Console.WriteLine("7. Gecko");
             Console.WriteLine("              ");
             Console.Write("Enter your choice: ");
 
@@ -76,6 +80,14 @@ namespace InteractivePetSimulator
                 petType = PetType.Cat;
             else if (input == "3")
                 petType = PetType.MiniDragon;
+            else if (input == "4")
+                petType = PetType.Snake;
+            else if (input == "5")
+                petType = PetType.Goldfish;
+            else if (input == "6")
+                petType = PetType.Turtle;
+            else if (input == "7")
+                petType = PetType.Gecko;
             else
             {
                 Console.WriteLine("Invalid choice. Returning to main menu...");
