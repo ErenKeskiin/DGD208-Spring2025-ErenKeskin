@@ -34,6 +34,7 @@ namespace InteractivePetSimulator
                 {
                     if (pets.Count == 0)
                     {
+                        Console.ForegroundColor = ConsoleColor.White;
                         Console.WriteLine("You have no pets.");
                     }
                     else
@@ -46,12 +47,14 @@ namespace InteractivePetSimulator
                     }
                 }
                 Console.WriteLine();
-
+                Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine("1. Adopt a new pet");
                 Console.WriteLine("2. Buy Items");
                 Console.WriteLine("3. Credits");
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("4. Exit");
                 Console.WriteLine();
+                Console.ForegroundColor = ConsoleColor.White;
                 Console.Write("Enter your choice: ");
 
                 string input = Console.ReadLine();
