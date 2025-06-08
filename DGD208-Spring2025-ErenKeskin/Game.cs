@@ -29,7 +29,6 @@ namespace InteractivePetSimulator
                 Console.ResetColor();
                 Console.WriteLine();
 
-
                 lock (pets)
                 {
                     if (pets.Count == 0)
@@ -93,7 +92,6 @@ namespace InteractivePetSimulator
 
                 lock (pets)
                 {
-                    
                     foreach (var pet in pets.ToList())
                     {
                         pet.DecreaseStats();
@@ -142,7 +140,7 @@ namespace InteractivePetSimulator
             }
 
             var newPet = new Pet(petType);
-            newPet.PetDied += Pet_PetDied; 
+            newPet.PetDied += Pet_PetDied;
 
             lock (pets)
             {
@@ -153,7 +151,6 @@ namespace InteractivePetSimulator
             Console.ReadKey();
         }
 
-        
         private void Pet_PetDied(object sender, PetEventArgs e)
         {
             lock (pets)
@@ -167,42 +164,151 @@ namespace InteractivePetSimulator
 
         private void BuyItems()
         {
-           
             var usableItems = ItemDatabase.Items.Where(item => pets.Any(pet => item.UsablePetTypes.Contains(pet.PetType))).ToList();
 
-            var menu = new Menu<Item>("Shop - Buy Items", usableItems, item => item.ToString());
-            var selectedItem = menu.ShowAndGetSelection();
-            if (selectedItem == null) return;
+            
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("╔══════════════════════════════════════════════════════════════╗");
+            Console.WriteLine("║                        PET SHOP                            ║");
+            Console.WriteLine("╚══════════════════════════════════════════════════════════════╝");
+            Console.ResetColor();
+            Console.WriteLine();
 
-            if (player.SpendMoney(selectedItem.Price))
+            if (usableItems.Count == 0)
             {
-                lock (pets)
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("No available items to buy for your pets!");
+                Console.ResetColor();
+                Console.WriteLine("Press any key to return to the main menu...");
+                Console.ReadKey();
+                return;
+            }
+
+            Console.WriteLine("Available Items:");
+            Console.WriteLine();
+
+            int boxWidth = 58; 
+
+            for (int i = 0; i < usableItems.Count; i++)
+            {
+                var item = usableItems[i];
+
+                
+                Console.ForegroundColor = ConsoleColor.DarkGray;
+                Console.WriteLine("╔" + new string('═', boxWidth - 2) + "╗");
+                Console.ResetColor();
+
+                
+                string itemLine = $"║ {i + 1}. {item.Name}";
+                int itemNamePad = boxWidth - 2 - itemLine.Length;
+                if (itemNamePad > 0) itemLine += new string(' ', itemNamePad);
+                itemLine += " ║";
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(itemLine);
+                Console.ResetColor();
+
+                
+                string typeText = "Type: ";
+                string typeValue = item.Type.ToString();
+                string priceText = " | Price: ";
+                string priceValue = item.Price.ToString();
+                string statText = " | Stat+: ";
+                string statValue = "+" + item.StatIncrease.ToString();
+                string timeText = " | Time: ";
+                string timeValue = item.DurationSeconds + "s";
+
+                
+                string plainLine = $"║ {typeText}{typeValue}{priceText}{priceValue}{statText}{statValue}{timeText}{timeValue}";
+                int padding = boxWidth - 2 - GetPlainTextLength(plainLine);
+
+                // Başlangıcı yaz
+                Console.Write("║ " + typeText);
+                Console.ForegroundColor = ConsoleColor.Magenta;
+                Console.Write(typeValue);
+                Console.ResetColor();
+
+                Console.Write(priceText);
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write(priceValue);
+                Console.ResetColor();
+
+                Console.Write(statText);
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write(statValue);
+                Console.ResetColor();
+
+                Console.Write(timeText);
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.Write(timeValue);
+                Console.ResetColor();
+
+                
+                if (padding > 0) Console.Write(new string(' ', padding));
+                Console.WriteLine(" ║");
+
+                
+                Console.ForegroundColor = ConsoleColor.DarkGray;
+                Console.WriteLine("╚" + new string('═', boxWidth - 2) + "╝");
+                Console.ResetColor();
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("0. Go Back");
+            Console.WriteLine();
+            Console.Write("Enter the item number to buy: ");
+
+            string input = Console.ReadLine();
+
+            int selection;
+            if (int.TryParse(input, out selection) && selection > 0 && selection <= usableItems.Count)
+            {
+                var selectedItem = usableItems[selection - 1];
+                if (player.SpendMoney(selectedItem.Price))
                 {
-                    if (pets.Count == 0)
+                    lock (pets)
                     {
-                        Console.WriteLine("You have no pets to use this item on.");
-                        player.AddMoney(selectedItem.Price);
-                        Console.ReadKey();
-                        return;
-                    }
+                        if (pets.Count == 0)
+                        {
+                            Console.WriteLine("You have no pets to use this item on.");
+                            player.AddMoney(selectedItem.Price);
+                            Console.ReadKey();
+                            return;
+                        }
 
-                    
-                    var petMenu = new Menu<Pet>("Select Pet to Use Item", pets.Where(pet => selectedItem.UsablePetTypes.Contains(pet.PetType)).ToList(), pet => pet.ToString());
-                    var selectedPet = petMenu.ShowAndGetSelection();
-                    if (selectedPet == null)
-                    {
-                        player.AddMoney(selectedItem.Price);
-                        return;
-                    }
+                        var petMenu = new Menu<Pet>("Select Pet to Use Item", pets.Where(pet => selectedItem.UsablePetTypes.Contains(pet.PetType)).ToList(), pet => pet.ToString());
+                        var selectedPet = petMenu.ShowAndGetSelection();
+                        if (selectedPet == null)
+                        {
+                            player.AddMoney(selectedItem.Price);
+                            return;
+                        }
 
-                    ApplyItemToPet(selectedItem, selectedPet);
+                        ApplyItemToPet(selectedItem, selectedPet);
+                    }
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Not enough money!");
+                    Console.ResetColor();
+                    Console.ReadKey();
                 }
             }
-            else
+            else if (selection != 0)
             {
-                Console.WriteLine("Not enough money!");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Invalid selection. Press any key to try again.");
+                Console.ResetColor();
                 Console.ReadKey();
             }
+        }
+
+
+        private int GetPlainTextLength(string coloredLine)
+        {
+
+            return coloredLine.Length;
         }
 
         private void ApplyItemToPet(Item item, Pet pet)
