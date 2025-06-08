@@ -10,7 +10,7 @@ namespace InteractivePetSimulator
     public class Game
     {
         private List<Pet> pets = new List<Pet>();
-        private Player player = new Player(1000);
+        private Player player = new Player(500);
 
         private CancellationTokenSource statDecreaseCts;
 
@@ -38,11 +38,66 @@ namespace InteractivePetSimulator
                     }
                     else
                     {
-                        Console.WriteLine("Your Pets:");
-                        foreach (var pet in pets)
+                        
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.WriteLine("╔══════════════════════════════════════════════════════════════╗");
+                        Console.WriteLine("║                        YOUR PETS                             ║");
+                        Console.WriteLine("╚══════════════════════════════════════════════════════════════╝");
+                        Console.ResetColor();
+
+                        int petBoxWidth = 58;
+                        for (int i = 0; i < pets.Count; i++)
                         {
-                            Console.WriteLine($"{pet.PetType}: Hunger = {pet.Stat.Hunger}, Sleep = {pet.Stat.Sleep}, Fun = {pet.Stat.Fun}");
+                            var pet = pets[i];
+
+                            
+                            Console.ForegroundColor = ConsoleColor.DarkGray;
+                            Console.WriteLine("╔" + new string('═', petBoxWidth - 2) + "╗");
+                            Console.ResetColor();
+
+                            
+                            string title = $"{i + 1}. {pet.PetType}";
+                            string titleLine = "║ " + title;
+                            int titlePad = petBoxWidth - 2 - titleLine.Length;
+                            if (titlePad > 0) titleLine += new string(' ', titlePad);
+                            titleLine += " ║";
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.WriteLine(titleLine);
+                            Console.ResetColor();
+
+                            
+                            string hungerText = "Hunger: ";
+                            string sleepText = " | Sleep: ";
+                            string funText = " | Fun: ";
+
+                            
+                            string plainStats = $"║ {hungerText}{pet.Stat.Hunger}{sleepText}{pet.Stat.Sleep}{funText}{pet.Stat.Fun}";
+                            int statsPad = petBoxWidth - 2 - plainStats.Length;
+
+                            Console.Write("║ " + hungerText);
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.Write(pet.Stat.Hunger);
+                            Console.ResetColor();
+
+                            Console.Write(sleepText);
+                            Console.ForegroundColor = ConsoleColor.Blue;
+                            Console.Write(pet.Stat.Sleep);
+                            Console.ResetColor();
+
+                            Console.Write(funText);
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.Write(pet.Stat.Fun);
+                            Console.ResetColor();
+
+                            if (statsPad > 0) Console.Write(new string(' ', statsPad));
+                            Console.WriteLine(" ║");
+
+                            
+                            Console.ForegroundColor = ConsoleColor.DarkGray;
+                            Console.WriteLine("╚" + new string('═', petBoxWidth - 2) + "╝");
+                            Console.ResetColor();
                         }
+                        
                     }
                 }
                 Console.WriteLine();
@@ -88,7 +143,7 @@ namespace InteractivePetSimulator
         {
             while (!token.IsCancellationRequested)
             {
-                await Task.Delay(3000, token);
+                await Task.Delay(2000, token);
 
                 lock (pets)
                 {
@@ -103,6 +158,7 @@ namespace InteractivePetSimulator
         private void AdoptNewPet()
         {
             Console.Clear();
+            Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("Choose a pet type to adopt:");
             Console.WriteLine();
             Console.WriteLine("1. Dog");
@@ -170,7 +226,7 @@ namespace InteractivePetSimulator
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine("╔══════════════════════════════════════════════════════════════╗");
-            Console.WriteLine("║                        PET SHOP                            ║");
+            Console.WriteLine("║                        PET SHOP                              ║");
             Console.WriteLine("╚══════════════════════════════════════════════════════════════╝");
             Console.ResetColor();
             Console.WriteLine();
@@ -220,9 +276,9 @@ namespace InteractivePetSimulator
 
                 
                 string plainLine = $"║ {typeText}{typeValue}{priceText}{priceValue}{statText}{statValue}{timeText}{timeValue}";
-                int padding = boxWidth - 2 - GetPlainTextLength(plainLine);
+                int padding = boxWidth - 2 - plainLine.Length;
 
-                // Başlangıcı yaz
+                
                 Console.Write("║ " + typeText);
                 Console.ForegroundColor = ConsoleColor.Magenta;
                 Console.Write(typeValue);
@@ -243,7 +299,6 @@ namespace InteractivePetSimulator
                 Console.Write(timeValue);
                 Console.ResetColor();
 
-                
                 if (padding > 0) Console.Write(new string(' ', padding));
                 Console.WriteLine(" ║");
 
@@ -302,13 +357,6 @@ namespace InteractivePetSimulator
                 Console.ResetColor();
                 Console.ReadKey();
             }
-        }
-
-
-        private int GetPlainTextLength(string coloredLine)
-        {
-
-            return coloredLine.Length;
         }
 
         private void ApplyItemToPet(Item item, Pet pet)
