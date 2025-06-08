@@ -22,11 +22,14 @@ namespace InteractivePetSimulator
             while (true)
             {
                 Console.Clear();
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("=== Interactive Pet Simulator ===");
+                Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine($"Money: {player.Money}");
+                Console.ResetColor();
                 Console.WriteLine();
 
-               
+
                 lock (pets)
                 {
                     if (pets.Count == 0)
@@ -87,28 +90,10 @@ namespace InteractivePetSimulator
 
                 lock (pets)
                 {
-                    var deadPets = new List<Pet>();
-                    foreach (var pet in pets)
+                    
+                    foreach (var pet in pets.ToList())
                     {
-                        pet.Stat.Hunger = Math.Max(0, pet.Stat.Hunger - 1);
-                        pet.Stat.Sleep = Math.Max(0, pet.Stat.Sleep - 1);
-                        pet.Stat.Fun = Math.Max(0, pet.Stat.Fun - 1);
-
-                        if (pet.Stat.Hunger == 0 || pet.Stat.Sleep == 0 || pet.Stat.Fun == 0)
-                        {
-                            deadPets.Add(pet);
-                        }
-                    }
-
-                    foreach (var dead in deadPets)
-                    {
-                        Console.WriteLine($"Your {dead.PetType} has died due to a stat reaching 0!");
-                        pets.Remove(dead);
-                    }
-                    if (deadPets.Count > 0)
-                    {
-                        Console.WriteLine("Press any key to continue...");
-                        Console.ReadKey();
+                        pet.DecreaseStats();
                     }
                 }
             }
@@ -154,6 +139,8 @@ namespace InteractivePetSimulator
             }
 
             var newPet = new Pet(petType);
+            newPet.PetDied += Pet_PetDied; 
+
             lock (pets)
             {
                 pets.Add(newPet);
@@ -163,9 +150,24 @@ namespace InteractivePetSimulator
             Console.ReadKey();
         }
 
+        
+        private void Pet_PetDied(object sender, PetEventArgs e)
+        {
+            lock (pets)
+            {
+                pets.Remove(e.Pet);
+            }
+            Console.WriteLine($"Your {e.Pet.PetType} has died due to a stat reaching 0!");
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadKey();
+        }
+
         private void BuyItems()
         {
-            var menu = new Menu<Item>("Shop - Buy Items", ItemDatabase.Items, item => item.ToString());
+           
+            var usableItems = ItemDatabase.Items.Where(item => pets.Any(pet => item.UsablePetTypes.Contains(pet.PetType))).ToList();
+
+            var menu = new Menu<Item>("Shop - Buy Items", usableItems, item => item.ToString());
             var selectedItem = menu.ShowAndGetSelection();
             if (selectedItem == null) return;
 
@@ -181,19 +183,12 @@ namespace InteractivePetSimulator
                         return;
                     }
 
-                    var petMenu = new Menu<Pet>("Select Pet to Use Item", pets, pet => pet.ToString());
+                    
+                    var petMenu = new Menu<Pet>("Select Pet to Use Item", pets.Where(pet => selectedItem.UsablePetTypes.Contains(pet.PetType)).ToList(), pet => pet.ToString());
                     var selectedPet = petMenu.ShowAndGetSelection();
                     if (selectedPet == null)
                     {
                         player.AddMoney(selectedItem.Price);
-                        return;
-                    }
-
-                    if (!selectedItem.UsablePetTypes.Contains(selectedPet.PetType))
-                    {
-                        Console.WriteLine($"This item cannot be used on {selectedPet.PetType}!");
-                        player.AddMoney(selectedItem.Price);
-                        Console.ReadKey();
                         return;
                     }
 
@@ -231,16 +226,41 @@ namespace InteractivePetSimulator
         private void ShowCredits()
         {
             Console.Clear();
-            Console.WriteLine("=== Credits ===");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("╔══════════════════════════════════════════════════╗");
+            Console.WriteLine("║         INTERACTIVE PET SIMULATOR - CREDITS      ║");
+            Console.WriteLine("╚══════════════════════════════════════════════════╝");
+            Console.ResetColor();
+
             Console.WriteLine();
-            Console.WriteLine(" /\\_/\\\n( o.o )\n > ^ <");
+
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("         /\\_/\\    ");
+            Console.WriteLine("        ( o.o )   ");
+            Console.WriteLine("         > ^ <    ");
+            Console.ResetColor();
+
             Console.WriteLine();
-            Console.WriteLine("Developed by: Eren Keskin");
-            Console.WriteLine("Student Number: 225040108");
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("  Developed by : Eren Keskin");
+            Console.WriteLine("  Student No   : 225040108");
+            Console.ResetColor();
+
             Console.WriteLine();
-            Console.WriteLine("       --DGD208--        ");
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine("  DGD208 - 2025 Spring");
+            Console.ResetColor();
+
             Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine("  GitHub: github.com/ErenKeskiin/DGD208-Spring2025-ErenKeskin");
+            Console.ResetColor();
+
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("Press any key to return to the main menu...");
+            Console.ResetColor();
             Console.ReadKey();
         }
     }
