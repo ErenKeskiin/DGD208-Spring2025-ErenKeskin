@@ -12,12 +12,10 @@ namespace InteractivePetSimulator
         private List<Pet> pets = new List<Pet>();
         private Player player = new Player(1000);
 
-
         private CancellationTokenSource statDecreaseCts;
 
         public void Start()
         {
-            
             statDecreaseCts = new CancellationTokenSource();
             StartPetStatDecreaseLoopAsync(statDecreaseCts.Token);
 
@@ -26,13 +24,31 @@ namespace InteractivePetSimulator
                 Console.Clear();
                 Console.WriteLine("=== Interactive Pet Simulator ===");
                 Console.WriteLine($"Money: {player.Money}");
-                Console.WriteLine("                                 ");
+                Console.WriteLine();
+
+               
+                lock (pets)
+                {
+                    if (pets.Count == 0)
+                    {
+                        Console.WriteLine("You have no pets.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Your Pets:");
+                        foreach (var pet in pets)
+                        {
+                            Console.WriteLine($"{pet.PetType}: Hunger = {pet.Stat.Hunger}, Sleep = {pet.Stat.Sleep}, Fun = {pet.Stat.Fun}");
+                        }
+                    }
+                }
+                Console.WriteLine();
+
                 Console.WriteLine("1. Adopt a new pet");
-                Console.WriteLine("2. Your Pets");
-                Console.WriteLine("3. Buy Items");
-                Console.WriteLine("4. Credits");
-                Console.WriteLine("5. Exit");
-                Console.WriteLine("       ");
+                Console.WriteLine("2. Buy Items");
+                Console.WriteLine("3. Credits");
+                Console.WriteLine("4. Exit");
+                Console.WriteLine();
                 Console.Write("Enter your choice: ");
 
                 string input = Console.ReadLine();
@@ -43,20 +59,16 @@ namespace InteractivePetSimulator
                 }
                 else if (input == "2")
                 {
-                    ViewPetStats();
+                    BuyItems();
                 }
                 else if (input == "3")
                 {
-                    BuyItems();
+                    ShowCredits();
                 }
                 else if (input == "4")
                 {
-                    ShowCredits();
-                }
-                else if (input == "5")
-                {
                     Console.WriteLine("Exiting the game...");
-                    statDecreaseCts.Cancel(); 
+                    statDecreaseCts.Cancel();
                     break;
                 }
                 else
@@ -67,30 +79,27 @@ namespace InteractivePetSimulator
             }
         }
 
-        
         private async void StartPetStatDecreaseLoopAsync(CancellationToken token)
         {
             while (!token.IsCancellationRequested)
             {
-                await Task.Delay(3000, token); 
+                await Task.Delay(3000, token);
 
-                lock (pets) 
+                lock (pets)
                 {
                     var deadPets = new List<Pet>();
                     foreach (var pet in pets)
                     {
-                        
                         pet.Stat.Hunger = Math.Max(0, pet.Stat.Hunger - 1);
                         pet.Stat.Sleep = Math.Max(0, pet.Stat.Sleep - 1);
                         pet.Stat.Fun = Math.Max(0, pet.Stat.Fun - 1);
 
-                        
                         if (pet.Stat.Hunger == 0 || pet.Stat.Sleep == 0 || pet.Stat.Fun == 0)
                         {
                             deadPets.Add(pet);
                         }
                     }
-                    
+
                     foreach (var dead in deadPets)
                     {
                         Console.WriteLine($"Your {dead.PetType} has died due to a stat reaching 0!");
@@ -109,7 +118,7 @@ namespace InteractivePetSimulator
         {
             Console.Clear();
             Console.WriteLine("Choose a pet type to adopt:");
-            Console.WriteLine("                           ");
+            Console.WriteLine();
             Console.WriteLine("1. Dog");
             Console.WriteLine("2. Cat");
             Console.WriteLine("3. MiniDragon");
@@ -117,7 +126,7 @@ namespace InteractivePetSimulator
             Console.WriteLine("5. GoldFish");
             Console.WriteLine("6. Turtle");
             Console.WriteLine("7. Gecko");
-            Console.WriteLine("              ");
+            Console.WriteLine();
             Console.Write("Enter your choice: ");
 
             string input = Console.ReadLine();
@@ -150,30 +159,6 @@ namespace InteractivePetSimulator
                 pets.Add(newPet);
             }
             Console.WriteLine($"You adopted a new {petType}!");
-            Console.WriteLine("Press any key to return to the main menu...");
-            Console.ReadKey();
-        }
-
-        private void ViewPetStats()
-        {
-            Console.Clear();
-
-            lock (pets)
-            {
-                if (pets.Count == 0)
-                {
-                    Console.WriteLine("You have no pets.");
-                }
-                else
-                {
-                    Console.WriteLine("Your pets:");
-                    foreach (var pet in pets)
-                    {
-                        Console.WriteLine($"{pet.PetType}: Hunger = {pet.Stat.Hunger}, Sleep = {pet.Stat.Sleep}, Fun = {pet.Stat.Fun}");
-                    }
-                }
-            }
-
             Console.WriteLine("Press any key to return to the main menu...");
             Console.ReadKey();
         }
@@ -247,14 +232,14 @@ namespace InteractivePetSimulator
         {
             Console.Clear();
             Console.WriteLine("=== Credits ===");
-            Console.WriteLine("                         ");
+            Console.WriteLine();
             Console.WriteLine(" /\\_/\\\n( o.o )\n > ^ <");
-            Console.WriteLine("                         ");
+            Console.WriteLine();
             Console.WriteLine("Developed by: Eren Keskin");
             Console.WriteLine("Student Number: 225040108");
-            Console.WriteLine("                         ");
+            Console.WriteLine();
             Console.WriteLine("       --DGD208--        ");
-            Console.WriteLine("                         ");
+            Console.WriteLine();
             Console.WriteLine("Press any key to return to the main menu...");
             Console.ReadKey();
         }
