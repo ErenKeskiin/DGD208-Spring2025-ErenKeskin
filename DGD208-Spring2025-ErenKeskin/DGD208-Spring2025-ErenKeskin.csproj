@@ -45,7 +45,6 @@
   <ItemGroup>
     <Compile Include="Game.cs" />
     <Compile Include="Item.cs" />
-    <Compile Include="ItemDatabase.cs" />
     <Compile Include="ItemType.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="Pets\Pet.cs" />
@@ -54,6 +53,7 @@
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="İtemDataBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
